@@ -4,22 +4,105 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.limber</groupId>
   <artifactId>api-v3</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <properties>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus-plugin.version>1.13.2.Final</quarkus-plugin.version>
-    <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.13.2.Final</quarkus.platform.version>
-    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-  </properties>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>resource</module>
+        <module>repository</module>
+        <module>microservice</module>
+    </modules>
+    <properties>
+        <dependency.version.lombok>1.18.20</dependency.version.lombok>
+        <dependency.version.mapstruct>1.3.1.Final</dependency.version.mapstruct>
+
+        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <quarkus-plugin.version>1.13.2.Final</quarkus-plugin.version>
+        <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.version>1.13.2.Final</quarkus.platform.version>
+        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    </properties>
+
+   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${compiler-plugin.version}</version>
+          <configuration>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${dependency.version.lombok}</version>
+              </path>
+              <!--
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${dependency.version.mapstruct}</version>
+              </path>
+              -->
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${quarkus-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>build</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+          <configuration>
+            <systemProperties>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemProperties>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.limber</groupId>
+        <artifactId>repository</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+     </dependency>
+      <dependency>
+        <groupId>io.limber</groupId>
+        <artifactId>resource</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.limber</groupId>
+        <artifactId>microservice</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -27,76 +110,30 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${dependency.version.lombok}</version>
+      </dependency>
+
+      <!--
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${dependency.version.mapstruct}</version>
+      </dependency>
+      -->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${surefire-plugin.version}</version>
+        </dependency>
     </dependencies>
   </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-spring-cache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-spring-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-spring-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-spring-boot-properties</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-              <goal>generate-code</goal>
-              <goal>generate-code-tests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
-        <configuration>
-          <parameters>${maven.compiler.parameters}</parameters>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
   <profiles>
     <profile>
       <id>native</id>
